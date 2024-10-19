@@ -5,6 +5,7 @@ require_once('lib/config.php');
 
 $db = new Database();
 $userModel = new User($db);
+$postModel = new Post($db);
 $log = new Log($db);
 $session = new Session();
 
@@ -20,6 +21,29 @@ if (isset($_GET['logout'])) {
 
 $user = $session->getUser();
 $username = $user['username'];
+
+if (isset($_POST['create_post'])) {
+    $data = [
+        'user_id' => $user['id'],
+        'title' => $_POST['title'],
+        'content' => $_POST['content'],
+        'location' => $_POST['location'] ?? null
+    ];
+    $message = $postModel->createPost($data);
+}
+
+if (isset($_POST['delete_post'])) {
+    $postId = $_POST['post_id'];
+    $userId = $user['id']; // Get the logged-in user's ID
+
+    if ($postModel->deletePost($postId, $userId)) {
+        $message = "<div class='alert alert-success'>Post deleted successfully.</div>";
+    } else {
+        $message = "<div class='alert alert-danger'>Error deleting post.</div>";
+    }
+}
+
+$posts = $postModel->getAllPosts();
 
 if (isset($_POST['change_password'])) {
     $new_password = $_POST['new_password'];
@@ -90,6 +114,84 @@ $logs = $log->getLogs();
             </div>
         </div>
     </div>
+
+    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#createPostModal">Create Post</button>
+
+    <!-- Modal for creating a post -->
+    <div id="createPostModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Create Post</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Post creation form -->
+                    <form action="index.php" method="POST">
+                        <div class="form-group">
+                            <label for="title">Title:</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="content">Content:</label>
+                            <textarea class="form-control" id="content" name="content" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Location:</label>
+                            <input type="text" class="form-control" id="location" name="location">
+                        </div>
+                        <button type="submit" class="btn btn-primary" name="create_post">Create Post</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Display messages -->
+    <?php if (isset($message)) echo $message; ?>
+
+    <h1>All Posts</h1>
+    
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Location</th>
+                <th>Timestamp</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($posts) {
+                foreach ($posts as $post) {
+                    echo "<tr>
+                            <td>{$post['username']}</td>
+                            <td>{$post['title']}</td>
+                            <td>{$post['content']}</td>
+                            <td>{$post['location']}</td>
+                            <td>{$post['timestamp']}</td>
+                            <td>
+                                <form action='index.php' method='POST' style='display:inline;'>
+                                    <input type='hidden' name='post_id' value='{$post['id']}'>
+                                    <input type='hidden' name='user_id' value='{$post['user_id']}'>
+                                    <button type='submit' class='btn btn-danger' name='delete_post'>Delete</button>
+                                </form>
+                            </td>
+                        </tr>";
+                }
+            } else {
+                echo "<tr><td colspan='6'>No posts found</td></tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+
 
     <h1>All Users</h1>
     

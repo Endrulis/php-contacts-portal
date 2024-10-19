@@ -1,4 +1,5 @@
 <?php
+//user.php
 
 class User {
     private $db;

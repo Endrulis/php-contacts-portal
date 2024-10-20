@@ -1,3 +1,12 @@
+<?php
+//registration.php
+
+require_once('app/lib/config.php');
+
+$session->checkLogin();
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -63,6 +72,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
+
         function slaptazodzio_generatorius(simboliu_kiekis) {
             var pass = '';
             for (var i = 0; i < simboliu_kiekis; i++) {
@@ -117,7 +127,7 @@
 
                     $.ajax({
                         type: 'POST',
-                        url: 'process.php',
+                        url: 'jsregister.php',
                         data: {
                             firstname: firstname,
                             lastname: lastname,
@@ -126,7 +136,7 @@
                             password: password
                         },
                         success: function(response) {
-                            var data = JSON.parse(response); // Parse the JSON response
+                            var data = JSON.parse(response);
 
                             if (data.status === 'success') {
                                 Swal.fire({

@@ -1,16 +1,12 @@
 <?php
-require_once('lib/config.php');
+//jslogin.php
 
-$session = new Session();
-$db = new Database();
-$userModel = new User($db);
-$log = new Log($db);
+require_once('app/lib/config.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Validate input data
     if (empty($username) || empty($password)) {
         echo json_encode(['status' => 'error', 'message' => 'Username and password are required.']);
         exit;

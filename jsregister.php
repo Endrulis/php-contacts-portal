@@ -1,12 +1,8 @@
 
 <?php
-//process.php
+//jsregister.php
 
-
-require_once('lib/config.php');
-
-$db = new Database();
-$user = new User($db);
+require_once('app/lib/config.php');
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
        
@@ -16,7 +12,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $email = $_POST['email'];
     $password = $_POST['password'];
     
-    $response = $user->register($firstname, $lastname, $username, $email, $password);
+    $response = $userModel->register($firstname, $lastname, $username, $email, $password);
 
     echo json_encode($response);
 }else{

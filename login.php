@@ -1,13 +1,9 @@
 <?php
+//login.php
 
-require_once('lib/config.php');
+require_once('app/lib/config.php');
 
-$session = new Session();
-
-if($session->isLoggedIn()){
-    header("Location: index.php");
-    exit();
-}
+$session->checkLogin();
 
 ?>
 
@@ -21,7 +17,7 @@ if($session->isLoggedIn()){
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="public/css/styles.css">
 </head>
 <body>
 
@@ -45,25 +41,15 @@ if($session->isLoggedIn()){
                                 </div>
                                 <input type="password" name="password" id="password" class="form-control input_password" required>
                             </div>
-
-                            <div class="form-group">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" name="rememberme" class="custom-control-input" id="customControlInline">
-                                    <label for="customControlInline" class="custom-control-label">Remember me</label>
-                                </div>
-                            </div>
                     
-                            <div class="d-flex justify-content-center mt-3 login_container">
+                            <div class="d-flex justify-content-center mt-3 login_container" style="margin-top: 8px;">
                                 <button type="submit" name="button" id="login" class="btn login_btn">Login</button>
                             </div>
                         </form>
                     </div>
-                    <div class="mt-4">
+                    <div class="mt-5" style="margin-top: 8px;">
                         <div class="d-flex justify-content-center links">
                             Don't have an account? <a href="registration.php" class="ml-2">Sign Up</a>
-                        </div>
-                        <div class="d-flex justify-content-center">
-                            <a href="#">Forgot your password?</a>
                         </div>
                     </div>
                 </div>

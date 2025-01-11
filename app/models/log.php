@@ -10,8 +10,9 @@ class Log {
     public function logAction($username, $success) {
         $ip_address = $_SERVER['REMOTE_ADDR'];
         $timestamp = date('Y-m-d H:i:s');
+        $successInt = $success ? 1 : 0;
         $sql = "INSERT INTO log (username, timestamp, success, ip_address) VALUES (?, ?, ?, ?)";
-        $this->db->query($sql, [$username, $timestamp, $success, $ip_address]);
+        $this->db->query($sql, [$username, $timestamp, $successInt, $ip_address]);
     }
 
     public function getLogs() {

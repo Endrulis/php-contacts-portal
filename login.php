@@ -9,16 +9,18 @@ $session->checkLogin();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>Login</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="public/css/styles.css">
 </head>
+
 <body>
 
     <div class="container h-100">
@@ -41,7 +43,7 @@ $session->checkLogin();
                                 </div>
                                 <input type="password" name="password" id="password" class="form-control input_password" required>
                             </div>
-                    
+
                             <div class="d-flex justify-content-center mt-3 login_container" style="margin-top: 8px;">
                                 <button type="submit" name="button" id="login" class="btn login_btn">Login</button>
                             </div>
@@ -56,67 +58,72 @@ $session->checkLogin();
             </div>
         </div>
     </div>
-    
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script type="text/javascript">
-    $(function(){
-        $('#login').click(function(e){
-            e.preventDefault();
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-            var username=$('#username').val();
-            var password = $('#password').val();
+    <script type="text/javascript">
+        $(function() {
+            $('#login').click(function(e) {
+                e.preventDefault();
 
-            if (username.trim() === '' || password.trim() === '') {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Username and password are required.',
-                    icon: 'error'
-                });
-                return;
-            }
+                var username = $('#username').val();
+                var password = $('#password').val();
 
-            $.ajax({
-                type: "POST",
-                url: 'jslogin.php',
-                data:{username: username, password: password},
-                success: function(data){
-                    var response = JSON.parse(data);
-                    if(response.status === 'success'){
-                        
-                        Swal.fire({
-                            title: 'Successful',
-                            text: response.message,
-                            icon: 'success',
-                            timer: 2000,
-                            showConfirmButton: false
-                        }).then(function() {
-                            setTimeout(function() {
-                                window.location.href = "index.php";
-                            }, 100);
-                        });
-                    }else {
-                        Swal.fire({
-                            title: 'Error',
-                            text: response.message,
-                            icon: 'error'
-                        });
-                    }
-                },
-                error: function(data){
+                if (username.trim() === '' || password.trim() === '') {
                     Swal.fire({
                         title: 'Error',
-                        text: 'There were errors while processing the request.',
+                        text: 'Username and password are required.',
                         icon: 'error'
                     });
+                    return;
                 }
+
+                $.ajax({
+                    type: "POST",
+                    url: 'jslogin.php',
+                    data: {
+                        username: username,
+                        password: password
+                    },
+                    success: function(data) {
+                        try {
+                            var response = JSON.parse(data);
+                            console.log(response);
+
+                            if (response.status === 'success') {
+                                Swal.fire({
+                                    title: 'Successful',
+                                    text: response.message,
+                                    icon: 'success',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                }).then(function() {
+                                    window.location.href = "index.php";
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: response.message,
+                                    icon: 'error'
+                                });
+                            }
+                        } catch (e) {
+                            console.error("Invalid JSON response:", data);
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Invalid request. Username or password is incorrect',
+                                icon: 'error'
+                            });
+                        }
+                    }
+                })
             })
         })
-    })
-</script>
+    </script>
 
 </body>
+
 </html>
